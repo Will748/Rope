@@ -1,0 +1,17 @@
+﻿#pragma strict
+
+var object : Transform;
+
+function Start () {
+
+}
+
+function Update () {
+
+}
+
+function OnClick(){
+	if(GameObject.FindWithTag("ControlUnit").GetComponent(ControlUnit).allowObjectPlacement){
+		GameObject.Find("GridGameObject").SendMessage("setInstanceObject", object);
+	}
+}

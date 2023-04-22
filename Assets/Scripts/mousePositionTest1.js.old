@@ -1,0 +1,7 @@
+#pragma strict
+
+function OnGUI () {
+	var mousePosition =Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    var e : Event = Event.current;
+    Debug.Log(e.mousePosition);
+}

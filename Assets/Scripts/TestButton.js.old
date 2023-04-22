@@ -1,0 +1,19 @@
+﻿#pragma strict
+
+function Start () {
+
+}
+
+function Update () {
+
+}
+
+function OnClick(){
+	/*Debug.Log("Click");
+	var input : String = GameObject.Find("Input").GetComponent(UIInput).text;
+	GameObject.Find("Player").GetComponent(ShootGrapple2).grapplePositions.RemoveAt(parseInt(input));
+	GameObject.Find("Player").GetComponent(ShootGrapple2).swingDirs.RemoveAt(parseInt(input));
+	GameObject.Find("Player").GetComponent(Gtrigger).compareAngles.RemoveAt(parseInt(input));
+	Debug.Log(input);*/
+
+}

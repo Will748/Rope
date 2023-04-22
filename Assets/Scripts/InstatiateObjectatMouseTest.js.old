@@ -1,0 +1,21 @@
+#pragma strict
+
+var prefab : GameObject;
+var distanceFromCamera : float;
+
+function Update () {
+
+	var mousePosition : Vector3 = Input.mousePosition;
+	mousePosition.z = distanceFromCamera;
+	var worldMousePosition : Vector3 = Camera.main.ScreenToWorldPoint(mousePosition);
+	Debug.Log(worldMousePosition);
+	if(Input.GetButtonDown("Fire1"))
+	{
+		Instantiate(prefab, worldMousePosition, Quaternion.identity);	
+	
+	}
+	if(Input.GetButtonDown("Fire2"))
+	{
+		Destroy(GameObject.FindWithTag("Test"));
+	}
+}

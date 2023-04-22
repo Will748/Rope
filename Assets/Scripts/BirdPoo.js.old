@@ -1,0 +1,30 @@
+﻿#pragma strict
+
+var damage = 1.0;
+var landed = false;
+var time : float = 5.0;
+var SetSpeedTo : float = 2.0;
+function Start () {
+
+}
+
+function Update () {
+
+}
+
+function OnCollisionEnter(collision : Collision){
+	Debug.Log("landing");
+	if(collision.gameObject.tag == "Player" && !landed){
+		collision.gameObject.SendMessage("ApplyDamage", damage);
+	}
+	if(collision.gameObject.tag == "Player" && landed){
+		collision.gameObject.SendMessage("SetSpeed", SetSpeedTo);
+		yield WaitForSeconds(time);
+		collision.gameObject.SendMessage("SetSpeed", 4.0);
+	}
+	else{	
+		landed = true;
+	}
+		
+}
+		

@@ -1,0 +1,75 @@
+﻿#pragma strict
+var lastGrid : GameObject;
+var turr : Transform;
+var ground : Transform;
+var rotAmount : Vector3;
+var layerMask : LayerMask;
+var instantiateObject : Transform;
+private var i = 0;
+private var objectInstantiated;
+private var floatingObject : Transform;
+
+function Start () {
+	//layerMask = TurretPlacement;
+	//instantiateObject = turr;
+
+}
+
+function Update () {
+
+	var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+	var hit : RaycastHit;
+	if(!objectInstantiated && lastGrid != null){
+		objectInstantiated = true;
+		Debug.Log("hello");
+		try{
+			floatingObject = Instantiate(instantiateObject, Vector3(lastGrid.transform.position.x, lastGrid.transform.position.y +5, lastGrid.transform.position.z), Quaternion.identity);
+		}
+		catch(Exception){}
+	}
+	if(floatingObject != null && lastGrid != null){
+		floatingObject.transform.position = Vector3(lastGrid.transform.position.x, lastGrid.transform.position.y +5, lastGrid.transform.position.z);
+	} 
+	if(Physics.Raycast(ray, hit, 10000,layerMask.value)){
+		if(lastGrid){
+			lastGrid.GetComponent.<Renderer>().material.color = Color.white;
+			//lastGrid.tag = "Untaken";
+		}
+		lastGrid = hit.collider.gameObject;
+		lastGrid.GetComponent.<Renderer>().material.color = Color.red;
+		//lastGrid.tag = "Untaken";
+		//Instantiate(GameObject.Find("Enemy"), hit.point, Quaternion.identity);
+	}
+	else{
+		if(lastGrid){
+			lastGrid.GetComponent.<Renderer>().material.color = Color.white;
+			lastGrid = null;
+		}
+	}
+	if(Input.GetMouseButtonDown(0) && lastGrid != null && lastGrid.tag == "Untaken"){
+		i +=1;
+		var spawnPoint = Vector3(lastGrid.transform.position.x, lastGrid.transform.position.y +0.1, lastGrid.transform.position.z);
+		rotAmount = ground.eulerAngles;
+		var ob = Instantiate(instantiateObject, spawnPoint, Quaternion.identity);
+		ob.name +=i;
+		//Ob.transform.eulerAngles = rotAmount;
+		//turrOb.transform.eulerAngles.x -= 0;
+		lastGrid.tag = "Taken";
+		lastGrid = null;
+		
+		
+	}
+		
+}
+
+function setInstanceObject(gO : Transform){
+	instantiateObject = gO;
+	if(floatingObject != null)Destroy(floatingObject.gameObject);
+	objectInstantiated = false;
+}
+
+function setInstanceObjectNull(){
+	instantiateObject = null;
+}
+	
+	

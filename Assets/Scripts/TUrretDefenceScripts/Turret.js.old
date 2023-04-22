@@ -1,0 +1,57 @@
+﻿#pragma strict
+var enemy : Transform;
+var myProjectile : Transform;
+var projectileSpawnPoint : Transform;
+var turnSpeed = 5;
+var reloadTime = 1.0;
+var accuracy = 2;
+var nextFireTime = 1;
+var nextMoveTime : int;
+var allowShoot;
+
+
+function Start () {
+	if(!myProjectile) myProjectile = GameObject.FindWithTag("Projectile").transform;
+	if(!projectileSpawnPoint) projectileSpawnPoint = GameObject.FindWithTag("projectileSpawnPoint").transform;
+}
+
+function Update () {
+	
+	if(enemy && allowShoot){
+
+		if(Time.time >= nextMoveTime){
+			var lookAtPosition = Quaternion.LookRotation(enemy.position - transform.position);
+			//transform.rotation = Quaternion.Lerp(transform.rotation, lookAtPosition, Time.deltaTime * turnSpeed);
+			transform.rotation = lookAtPosition;
+			
+		}
+		
+		if(Time.time >= nextFireTime){
+			shoot();
+		}
+	}
+
+}
+
+function OnTriggerEnter(other : Collider){
+	if(other.tag == "Enemy" || other.tag == "Enemy2"){
+		nextFireTime = Time.time + 0.5;
+		nextMoveTime = Time.time + 0.5;
+		enemy = other.gameObject.transform;
+	}
+}
+
+function OnTriggerExit(other : Collider){
+	if(other.gameObject.transform == enemy)enemy = null;
+}
+
+function shoot(){
+	Instantiate(myProjectile, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
+	nextFireTime = Time.time + reloadTime;
+	nextMoveTime = Time.time + 0.5;
+}	
+
+function SetAllowShoot(setting : boolean){
+	allowShoot = setting;
+}
+ 

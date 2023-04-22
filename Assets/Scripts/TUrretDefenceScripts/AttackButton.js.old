@@ -1,0 +1,40 @@
+﻿#pragma strict
+private var enemys : GameObject[];
+private var enemys2 : GameObject[];
+private var guns : GameObject[];
+private var turrets : GameObject[];
+
+
+function Start () {
+
+}
+
+function Update () {
+
+}
+
+function OnClick(){
+
+	GameObject.FindWithTag("ControlUnit").GetComponent(ControlUnit).allowObjectPlacement = true;
+	enemys = GameObject.FindGameObjectsWithTag("Enemy");
+	enemys2 = GameObject.FindGameObjectsWithTag("Enemy2");
+	guns = GameObject.FindGameObjectsWithTag("Gun");
+	turrets = GameObject.FindGameObjectsWithTag("Turret2");
+
+	for(var enemy : GameObject in enemys){
+		enemy.SendMessage("setAllowMove", true);
+		enemy.SendMessage("LookAtNearestTarget");
+	}
+	
+	for(var enemy : GameObject in enemys2){
+		enemy.SendMessage("setAllowMove", true);
+		enemy.SendMessage("LookAtNearestTarget");
+	}
+	for(var gun : GameObject in guns){
+		gun.SendMessage("FireMagazine");
+	}	
+	for(var turret : GameObject in turrets){
+		turret.SendMessage("SetAllowShoot", true);
+	}
+	Destroy(GameObject.FindWithTag("GUI"));
+}

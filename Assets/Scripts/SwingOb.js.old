@@ -1,0 +1,13 @@
+﻿#pragma strict
+
+function OnTriggerEnter(Other : Collider){
+	if(Other.GetComponent.<Collider>().gameObject.tag == "gTrigger"){
+		ShootGrapple2.grapplePositions.RemoveAt(ShootGrapple2.grapplePositions.Count-1);
+		//ShootGrapple2.moveGrapple(ShootGrapple2.grapplePositions[ShootGrapple2.grapplePositions.Count -1]);
+		transform.position = Gtrigger.swingObs[Gtrigger.swingObs.Count -1];
+		Gtrigger.hitObs[Gtrigger.hitObs.Count-1].tag = "Untagged";
+		Gtrigger.hitObs.RemoveAt(Gtrigger.hitObs.Count-1);
+		DrawGrappleLine.getLinePositions();
+		Destroy(gameObject);
+	}
+}

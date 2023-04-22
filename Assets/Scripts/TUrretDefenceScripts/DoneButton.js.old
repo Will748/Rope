@@ -1,0 +1,18 @@
+﻿#pragma strict
+
+var lvlAdditive = 0;
+function Start () {
+
+}
+
+function Update () {
+
+}
+
+function OnClick(){
+	
+	GameObject.Find("GridGameObject").SendMessage("setInstanceObjectNull");
+	GameObject.FindWithTag("ControlUnit").GetComponent(ControlUnit).allowObjectPlacement = false;
+	Debug.Log(GameObject.FindWithTag("ControlUnit").GetComponent(ControlUnit).allowObjectPlacement);
+	Application.LoadLevelAdditive(lvlAdditive);
+}

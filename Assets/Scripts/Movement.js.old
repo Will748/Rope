@@ -1,0 +1,145 @@
+#pragma strict
+var speed : float = 4;
+var rotateSpeed = 40.0;
+var jumpPower : float = 400;
+var pulleySpeed = 0.1;
+var force = 100;
+var lerpSpeed = 0.5;
+var dropOff = 3.0;
+var upforce = 10.0;
+var grappleJumpUp = 2.0;
+var grappleJumpForward = 2.0;
+//var smooth = 20.0;
+//var smoothTime = 1.0;
+static var hasShot = false;
+static var lerp = false;
+static var rotated = true;
+private var rotatedR = false;
+private var rotatedL = false;
+//private var yVelocity = 0.0;
+
+function Update() {
+
+    if(lerp){
+    	var grapplePosition = GameObject.FindWithTag("Grapple").transform.position;
+    	transform.position.y = transform.position.y + upforce;
+   		transform.position = Vector3.MoveTowards(transform.position, 
+												grapplePosition, lerpSpeed); 
+    	if(Vector3.Distance(transform.position, grapplePosition) < dropOff)
+    	{
+    		hasShot = false;
+    		ShootGrapple.hasShot = false;
+    		GetComponent.<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+			GetComponent.<Rigidbody>().constraints &= ~RigidbodyConstraints.FreezePositionX;	
+			GetComponent.<Rigidbody>().constraints &= ~RigidbodyConstraints.FreezePositionY; 
+    		Destroy(GameObject.FindWithTag("Grapple"));
+			//transform.rotation = Quaternion.Euler(Vector3(0, 0, 0));		
+    		lerp = false;
+    	}
+    }
+    var h = Input.GetAxis("Horizontal");
+    if(h && hasShot == false /*&& Physics.Raycast(transform.position, -Vector3.up, collider.bounds.extents.y + 0.1)*/){
+    	//rigidbody.velocity = Vector3(h  * speed, 0, 0)
+		if(h < 0 && rotatedL == false){
+			rotated = false;
+			StartCoroutine(Rotate(180));
+		}
+		if(h > 0 && rotatedR == false){
+			rotated = false;
+			StartCoroutine(Rotate(0));
+		}
+    	if(rotated)transform.Translate(speed * Time.deltaTime, 0,0);    	
+    }
+    if(Input.GetButtonDown("Jump") && Physics.Raycast(transform.position, -Vector3.up, GetComponent.<Collider>().bounds.extents.y + 0.1) && !hasShot){
+    	GetComponent.<Rigidbody>().AddForce(Vector3.up * jumpPower);
+   	}
+    
+    if(hasShot)
+    {	   	
+	
+		//var grapplePositions = GameObject.FindWithTag("Grapple").transform.position;
+		/*if(Input.GetButtonDown("Jump") && Physics.Raycast(transform.position, -Vector3.up, collider.bounds.extents.y + 0.1) == false){
+			rigidbody.AddForce(Vector3.up * grappleJumpUp);
+			if(rigidbody.velocity.x > 0)rigidbody.AddForce(Vector3.right * grappleJumpForward);
+			if(rigidbody.velocity.x < 0)rigidbody.AddForce(Vector3.left * grappleJumpForward);
+		}*/
+		var v = Input.GetAxis("Vertical");	
+		if(v){			
+			if(GameObject.FindWithTag("Grapple").GetComponent(ConfigurableJoint).linearLimit.limit >= v * pulleySpeed * Time.deltaTime)
+			{
+				GameObject.FindWithTag("Grapple").GetComponent(ConfigurableJoint).linearLimit.limit -= v * pulleySpeed * Time.deltaTime;
+			}
+		}
+    }	
+}
+
+function FixedUpdate(){
+	if(hasShot){
+		if (Input.GetKey("a") ) 
+		{
+			GetComponent.<Rigidbody>().AddForce (Vector3.right * -force); 
+		}
+		if (Input.GetKey("d") ) 
+		{	
+			GetComponent.<Rigidbody>().AddForce (Vector3.right * force); 
+		}
+	}
+}
+
+function Rotate(rotAmount : float)
+
+{
+	/*var oldRotation = transform.rotation; 
+   	transform.Rotate(0,-180,0); 
+   	var newRotation = transform.rotation; 
+   	for (var t = 0.0; t < 1.0; t += Time.deltaTime * rotateSpeed) 
+   	{ 
+		transform.rotation = Quaternion.Slerp(oldRotation, newRotation, t); 
+       	Debug.Log(t);
+       	yield; 
+	}
+	transform.rotation = newRotation;
+	switch(rotAmount){
+	case(1):
+		Debug.Log("working");
+		rotatedR = false;
+		rotatedL = true;
+		rotated = true;
+	break;	
+	case(2):
+		Debug.Log("workingtoo");
+		rotatedL = false;
+		rotatedR = true;
+		rotated = true;
+	break;
+	}*/
+	if(rotAmount == 180){
+		while(transform.rotation.y < 0.9){
+			transform.Rotate(0,Time.deltaTime * rotateSpeed,0);
+			//transform.eulerAngles.y = Mathf.SmoothDampAngle(transform.eulerAngles.y, rotAmount, yVelocity, smoothTime, smooth);
+			rotated = false;
+			yield;
+		}
+		//transform.eulerAngles.y = Mathf.SmoothDampAngle(transform.eulerAngles, rotAmount, smoothTime, smooth);
+		transform.eulerAngles.y = rotAmount;
+		rotated = true;
+		rotatedL = true;
+		rotatedR = false;
+	}
+	if(rotAmount == 0){
+		while(transform.rotation.y > 0){
+			transform.Rotate(0,Time.deltaTime * -rotateSpeed, 0);
+			rotated = false;
+			yield;
+		}
+		transform.eulerAngles.y = rotAmount;
+		transform.position.z = 0;
+		rotated = true;
+		rotatedR = true;
+		rotatedL = false;
+	}
+} 
+
+function SetSpeed(newSpeed : float){
+	speed = newSpeed;
+}

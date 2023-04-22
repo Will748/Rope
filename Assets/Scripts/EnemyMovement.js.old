@@ -1,0 +1,88 @@
+#pragma strict
+static var left = true;
+static var right = false;
+static var lerp = false;
+static var speed = 4.0;
+var lerpSpeed = 0.05;
+var player : GameObject;
+var stopDistance = 1.5;
+static var allowMovement = true;
+private var froze = false;
+
+function Awake(){
+
+	if(!player)player = GameObject.FindWithTag("Player");
+}
+	
+function Update () {
+	
+	//Debug.Log("kkk");
+	/*if(allowMovement){
+		if(left){
+			transform.Translate(-speed * Time.deltaTime, 0 ,0);
+		}
+		if(right){
+			transform.Translate(speed * Time.deltaTime, 0,0);
+		}
+	}*/
+	
+	/*if(lerp){
+		if(!froze){
+			froze = true;
+			FreezePositions();	
+		}	
+		var distance = Vector3.Distance(transform.position, player.transform.position);
+		if(distance > stopDistance){
+			transform.position = Vector3.Lerp(transform.position, player.transform.position,
+			lerpSpeed);
+			var force = rigidbody.velocity.x;
+			//Debug.Log(rigidbody.velocity);
+		}
+		else{
+			//rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+			Destroy(GameObject.FindWithTag("Grapple"));
+    		player.rigidbody.constraints &= ~RigidbodyConstraints.FreezePositionX;
+    		player.rigidbody.constraints &= ~RigidbodyConstraints.FreezePositionY;
+			//Debug.Log(rigidbody.velocity);
+			//rigidbody.AddForce(Vector3.forward *force);
+			lerp = false;
+			froze = false;
+		}
+	}*/
+}
+
+function OnTriggerEnter (other : Collider) {
+	//Debug.Log("Grapple");
+    if(other.gameObject.tag == "Grapple") {
+    	//Debug.Log("Grapplehit");
+    	other.GetComponent.<Rigidbody>().constraints &= ~RigidbodyConstraints.FreezePositionX;
+    	other.GetComponent.<Rigidbody>().isKinematic = true;	
+   		//other.gameObject.transform.parent = transform;
+   		//other.transform.position.x = transform.position.x;
+   		//other.transform.position.y = transform.position.y;
+
+    }
+}
+
+function FreezePositions(){
+	GameObject.FindWithTag("Grapple").transform.position.x = transform.position.x;
+	GameObject.FindWithTag("Grapple").transform.position.y = transform.position.y;
+	GetComponent.<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;	
+	GetComponent.<Rigidbody>().constraints &= ~RigidbodyConstraints.FreezePositionY;	
+	player.	GetComponent.<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;	
+}	
+
+
+/*function OnCollisionExit (other : Collision) {
+    if(other.gameObject.tag == "Player") {
+        other.transform.parent = null;
+    }
+}*/
+
+function ChangeSpeed(newSpeed : float){
+	speed = newSpeed;
+}
+
+function SetAllowMovement(movement : boolean){
+	allowMovement = movement;
+}

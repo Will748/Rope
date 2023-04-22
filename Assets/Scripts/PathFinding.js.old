@@ -1,0 +1,20 @@
+﻿#pragma strict
+var x = 0.0;
+var y = 0.0;
+var z = 0.0;
+
+
+function Start () {
+
+}
+
+function Update () {
+
+}
+
+function OnTriggerEnter(Other : Collider){
+
+	if(Other.GetComponent.<Collider>().tag == "Enemy"){
+		Other.transform.Rotate(x,y,z);
+	}
+}

@@ -1,0 +1,16 @@
+#pragma strict
+
+var force = 20;
+
+function Start () {
+
+}
+
+function Update () {
+
+}
+
+function OnCollisionEnter(collision : Collision){
+	Debug.Log("force");	
+	collision.rigidbody.AddForce(Vector3.up * force);
+}

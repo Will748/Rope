@@ -1,0 +1,27 @@
+﻿#pragma strict
+
+var range = 8;
+var speed = 200;
+var target : GameObject;
+var startPosition;
+
+function Start(){
+	
+	//Destroy(gameObject, 3);
+	startPosition = transform.position;
+}
+
+function Update () {
+
+	transform.Translate(0,speed * Time.deltaTime,0);
+	var distanceTravelled = Vector3.Distance(transform.position, startPosition);
+	if(distanceTravelled > range){
+		Destroy(gameObject);
+	}
+
+}
+
+function OnCollisionEnter(collision : Collision){
+	Debug.Log(collision.gameObject);
+	Destroy(gameObject);
+}

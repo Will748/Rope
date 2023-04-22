@@ -1,0 +1,18 @@
+﻿#pragma strict
+var health = 3.0;
+var script : Fruit;
+
+function OnTriggerEnter(collider : Collider){
+	if(collider.gameObject.tag == "Fruit"){
+		Debug.Log("hit");
+		script = collider.gameObject.GetComponent(Fruit);
+		ApplyDamage();
+	}
+}
+
+function ApplyDamage(){
+	health -= script.damage;
+	if(health == 0){
+		Destroy(gameObject);
+	}
+}

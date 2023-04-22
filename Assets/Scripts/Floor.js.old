@@ -1,0 +1,19 @@
+﻿#pragma strict
+
+function Start () {
+	
+	tag = "Untaken";
+
+}
+
+function Update () {
+	if(Input.GetMouseButtonDown(0)){
+	}
+		
+
+}
+
+
+
+
+	

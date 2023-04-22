@@ -1,0 +1,155 @@
+#pragma strict
+
+var player : GameObject;
+var drum : GameObject;
+static var swingObs = new List.<Vector3>();
+static var hitObs = new List.<GameObject>();
+static var compareAngles = new List.<Vector3>();
+enum swingDirE {RIGHT, LEFT, UP};
+private var swingDir : swingDirE;
+var SwingOb : GameObject;
+private var swingOb : GameObject;
+private var done = false;
+var gun : GameObject;
+static var i = 0;
+
+function Start () {
+	
+	if(!player) player = GameObject.FindWithTag("Player");
+	if(!drum) drum = GameObject.FindWithTag("Drum");
+	Physics.IgnoreCollision(player.GetComponent.<Collider>(), GetComponent.<Collider>());
+	Physics.IgnoreCollision(GetComponent.<Collider>(), drum.GetComponent.<Collider>());
+
+	
+}
+
+function Update(){
+	
+	if(Input.GetKey("j")){
+		Debug.Log(swingDir);
+	}
+}
+
+
+
+function OnCollisionEnter(collision : Collision){
+	if(collision.gameObject != player/* && !ShootGrapple2.grapplePositions.Contains(collision.transform.position)*//*&& collision.gameObject.tag !="used" && i == 0*/){
+		//collision.gameObject.tag = "used";
+		//EditorApplication.isPaused = true;
+		i++;
+		//Physics.IgnoreCollision(GetComponent.<Collider>(), collision.gameObject.GetComponent.<Collider>()); 
+		if(i == 2)StartCoroutine("trues");
+		var contact : ContactPoint = collision.contacts[0];
+	   	ShootGrapple2.grapplePositions.Add(GameObject.FindWithTag("Grapple").transform.position);
+	   	//ShootGrapple2.swingDirs.Add(swingDir);
+	   	if(player.GetComponent.<Rigidbody>().velocity.x > 0){
+	   		swingDir = swingDirE.RIGHT; //player swinging right
+	   		compareAngles.Add(Vector3.right);	
+	   	}	
+	   	if(player.GetComponent.<Rigidbody>().velocity.x < 0)
+	   	{
+	   		swingDir = swingDirE.LEFT;
+	   		//swingDir = 2; //player swinging left
+	   		compareAngles.Add(Vector3.right);
+	   	}
+	   	if(player.GetComponent.<Rigidbody>().velocity.y > 2.5){
+	   		swingDir = swingDirE.UP;
+	   		compareAngles.Add(Vector3.right);
+	   	}
+	   	//if(player.rigidbody.velocity.x < 0)swingDir = 2; //player swinging left
+	   	//if(PlayerPrefs.rigidbody.velocity.y >
+	   	ShootGrapple2.swingDirs.Add(swingDir);
+        var dir = contact.point - collision.transform.position;
+        var moveTo = collision.transform.position + dir.normalized * (dir.magnitude + 0.01f);
+        Debug.Log(moveTo.ToString("F4"));
+        Debug.Log(contact.point.ToString("F4"));
+	   	GameObject.Find("gunNull").SendMessage("moveGrapple",moveTo);
+	   	//ShootGrapple2.moveGrapple(contact.point);
+		DrawGrappleLine.getLinePositions();
+		//ShootGrapple2.swingDirs(player.rigidbody.velocity.;
+		//CreateSwingOb();
+		/*if(compareAngles.Count > 1){
+		}*/
+		checkGrapPos();
+		yield WaitForSeconds(0.1);
+			
+	}
+}
+
+function checkGrapPos(){
+	var i= 0;
+	var f = 0;
+	var n= 1;
+	while(i < ShootGrapple2.grapplePositions.Count){
+		while(f < ShootGrapple2.grapplePositions.Count){
+			if(Vector3.Distance(ShootGrapple2.grapplePositions[i], ShootGrapple2.grapplePositions[f]) < n){
+				if(!(ShootGrapple2.grapplePositions[i] == ShootGrapple2.grapplePositions[f])){
+					ShootGrapple2.grapplePositions.RemoveAt(Mathf.Max(i, f));	
+					ShootGrapple2.swingDirs.RemoveAt(Mathf.Max(i, f));
+					compareAngles.RemoveAt(Mathf.Max(i, f));
+				}
+			}
+			f++;
+		}
+		i++;
+		f=0;
+	}
+}
+
+function trues(){
+			while(true){
+				yield;
+				
+		}
+	}
+
+//create an object to swing into
+
+	//if(swingDir == 1)
+	    //swingOb.transform.Translate(-0.1,0,0);
+	//if(swingDir == 2)
+	    //swingOb.transform.Translate(0.1,0,0);
+
+
+function CreateSwingOb(){
+	var i : float;
+	var a = false;
+	var velo = player.GetComponent.<Rigidbody>().velocity.x;
+	//if(rigidbody.velocity.x > 0.0000)i = -0.2; //swinging left;
+	//if(rigidbody.velocity.x < 0.0000)i = 0.2; //swing right;
+	if(velo > 0)i = 0.2; //swinging right;
+	if(velo < 0)i = -0.2; //swing left;
+	//Debug.Log(i);	
+	var swingOb = Instantiate(SwingOb, player.transform.position, Quaternion.identity);
+	//swingOb.transform.rotation = Quaternion.LookRotation(ShootGrapple2.grapplePositions[ShootGrapple2.grapplePositions.Count-2]);
+	var distance = Vector3.Distance(player.transform.position, GameObject.FindWithTag("Grapple").transform.position);
+	distance -= 0.5;
+	swingOb.transform.LookAt(ShootGrapple2.grapplePositions[ShootGrapple2.grapplePositions.Count-2]);
+	/*if((swingOb.transform.eulerAngles.y == 270) && (i >0.0) && a == false){
+		Debug.Log(270);
+		a = true;
+		i = -0.2;
+	}*/
+	if(swingOb.transform.eulerAngles.y == 270){
+		swingOb.transform.eulerAngles.z = 180;
+	}
+	/*if((swingOb.transform.eulerAngles.y == 270) && (i<0.0)&& a == false){
+		Debug.Log(2700);
+		a = true;
+		i = 0.2;
+	}*/
+	Debug.Log(i);
+	Debug.Log(GetComponent.<Rigidbody>().velocity.x);	
+	swingOb.transform.Translate(0,0,distance);
+	swingOb.transform.Translate(0,i,0);
+	swingObs.Add(swingOb.transform.position);
+	Physics.IgnoreCollision(swingOb.GetComponent.<Collider>(), player.GetComponent.<Collider>());
+	Physics.IgnoreCollision(swingOb.GetComponent.<Collider>(), drum.GetComponent.<Collider>());
+	a = false;
+}
+
+	
+
+	
+	
+	

@@ -1,0 +1,52 @@
+﻿#pragma strict
+var speed = 4.0;
+var distanceToTravel = 10;
+var rotateSpeed = 0.1;
+private var distanceTravelled = 0.0;
+private var startingPosition;
+private var allowMovement = true;
+private var y = 270;
+ 
+
+function Start(){
+	startingPosition = transform.position;	
+}
+
+function Update () {
+	
+	distanceTravelled = Vector3.Distance(transform.position, startingPosition);
+	if(distanceTravelled > distanceToTravel){
+		StartCoroutine("Rotate");
+	}
+	if(allowMovement){
+		transform.Translate(0, 0, speed * Time.deltaTime);
+	}
+
+}
+
+function SetSpeed(newSpeed : float){
+	speed = newSpeed;
+}
+
+function SetAllowMovement(movement : boolean){
+	allowMovement = movement;
+}
+
+function Rotate(){
+	allowMovement = false;
+	startingPosition = transform.position;
+	var t = rotateSpeed;
+	var incAmount = rotateSpeed * Time.deltaTime;
+	while(incAmount < 1){
+		transform.eulerAngles = Vector3.Slerp(transform.eulerAngles, Vector3(0,y,0), incAmount);
+		incAmount += rotateSpeed * Time.deltaTime;
+		yield;
+	}
+	allowMovement = true;
+	if(y == 270)y = 90;
+	else if(y == 90)y = 270;
+}
+
+
+
+	

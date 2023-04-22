@@ -1,0 +1,10 @@
+#pragma strict
+var ZPosition = 0.0;
+var player : Transform;
+ 
+ function LateUpdate() 
+ {  
+ 	GetComponent.<Camera>().transform.rotation=Quaternion.Euler(Vector3(0, 0, 0));
+ 	transform.position.z = ZPosition; 
+ 	transform.position.x = player.position.x;
+ }

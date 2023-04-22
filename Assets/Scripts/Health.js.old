@@ -1,0 +1,18 @@
+﻿#pragma strict
+
+var health = 10.0;
+
+function Start () {
+
+}
+
+function Update () {
+
+}
+
+function ApplyDamage(damage : float){
+	health -= damage;
+	if(health == 0){
+		Application.LoadLevel(0);
+	}
+}

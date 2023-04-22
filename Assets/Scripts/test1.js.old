@@ -1,0 +1,64 @@
+#pragma strict
+import System.Collections.Generic;
+
+private var grapplePositions = new List.<int>();
+
+var gameO1 : GameObject;
+var gameO2 : GameObject;
+
+static var compareAngles = new List.<Vector3>();
+enum swingDirEn {RIGHT, LEFT, UP};
+private var swingDir : swingDirE;
+static var i : int;
+
+function Start(){
+	var player : GameObject;
+	var worldMousePosition : Transform;
+	StartCoroutine(TestForCollision(gameO1.transform.position, gameO2.transform.position));
+}
+
+function Update(){}
+	
+
+/*function TestForCollision(){
+	Debug.Log("hello");
+}*/
+
+function TestForCollision(playerPos : Vector3, grapplePos : Vector3){
+	var mask : int = 1 << 8;
+	mask = ~mask;
+	var hit : RaycastHit;
+	while(true){
+	var player = GameObject.FindWithTag("Player");
+	var grapple = GameObject.FindWithTag("Grapple");
+		if(Physics.Linecast(player.transform.position, grapple.transform.position, hit, mask)){
+			var dist = Vector3.Distance(player.transform.position, grapple.transform.position);
+			Debug.Log("hit"+ hit.transform.gameObject);
+			i++;
+	   		ShootGrapple3.grapplePositions.Add(GameObject.FindWithTag("Grapple").transform.position);
+	   		if(player.GetComponent.<Rigidbody>().velocity.x > 0){
+	   			swingDir = swingDirE.RIGHT; //player swinging right
+	   			compareAngles.Add(Vector3.right);	
+				Debug.Log("added1");
+	   		}	
+	   		if(player.GetComponent.<Rigidbody>().velocity.x < 0)
+	   		{
+	   			swingDir = swingDirE.LEFT; //player swinging left
+	   			compareAngles.Add(Vector3.right);
+				Debug.Log("added2");
+	   		}
+	   		/*if(player.GetComponent.<Rigidbody>().velocity.y > 2.5){
+	   			swingDir = swingDirE.UP;
+	   			compareAngles.Add(Vector3.right);
+	   		}*/
+			ShootGrapple3.swingDirs.Add(swingDir);
+	   		GameObject.Find("gunNull").SendMessage("moveGrapple",hit.point);
+			DrawGrappleLine.getLinePositions();			
+		}
+		else{
+			//Debug.Log("no hit");
+		}
+		yield;
+	}
+}
+

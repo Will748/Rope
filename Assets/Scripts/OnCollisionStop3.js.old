@@ -1,0 +1,21 @@
+
+/*function OnCollisionEnter(collision : Collision) {
+	rigidbody.useGravity = false;
+	Debug.Log("Unity");
+    if(collision.gameObject.tag == "Enemy") {
+    	Debug.Log("HitEnem");
+    	collision.transform.parent = transform;
+    	rigidbody.constraints &= ~RigidbodyConstraints.FreezePositionX;	
+    }
+}
+/*function OnCollisionExit (other : Collision) {
+    if(other.gameObject.tag == "Player") {
+        other.transform.parent = null;
+    }
+}*/
+
+function Start() {
+	
+	//Physics.IgnoreCollision(GameObject.FindWithTag("Enemy").collider, collider);
+
+}

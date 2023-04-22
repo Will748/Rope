@@ -1,0 +1,40 @@
+﻿#pragma strict
+
+var diveSpeed : float = 5.0;
+function Start () {
+
+}
+
+function Update () {
+
+}
+
+function OnTriggerEnter(collider : Collider){
+	if(collider.gameObject.tag == "Player"){
+		//transform.parent.transform.position = Vector3(0,0,0);
+		transform.parent.SendMessage("SetAllowMovement", false);
+		StartCoroutine(MoveTowardsPlayer());
+	}
+}
+
+function MoveTowardsPlayer(){
+	while(Vector3.Distance(GameObject.FindWithTag("Player").transform.position, transform.parent.position) > 2){
+		transform.parent.transform.LookAt(GameObject.FindWithTag("Player").transform.position);
+		transform.parent.Translate(0,0,diveSpeed);
+		yield;
+	}
+	StartCoroutine(FlyBack());
+}
+
+function FlyBack(){
+	Debug.Log("i");
+	transform.parent.eulerAngles.x = -40;
+	while(transform.parent.position.y < 16){
+		transform.parent.Translate(0, 0, diveSpeed);
+		yield;
+	}
+	transform.parent.eulerAngles.x = 0;
+	transform.parent.SendMessage("SetAllowMovement", true);
+
+}
+	

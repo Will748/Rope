@@ -1,0 +1,25 @@
+﻿#pragma strict
+
+
+var slowDownTo = 2.0;
+var time = 3.0;
+var destroyTime = 3.0;
+
+function Start(){
+	Destroy(gameObject, destroyTime); 
+}
+
+function OnCollisionEnter(collision : Collision) : IEnumerator{
+	if(collision.gameObject.tag == "Enemy"){
+		var origSpeed = collision.gameObject.GetComponent(Enemy).speed;
+		//var speed2 = origSpeed/slowDownTo;
+		collision.gameObject.GetComponent(EnemyMovement).speed = slowDownTo;
+		Debug.Log(collision.gameObject.GetComponent(EnemyMovement).speed);
+		yield WaitForSeconds(time);
+		GetComponent.<Collider>().gameObject.GetComponent(EnemyMovement).speed = origSpeed;
+
+	}
+}
+
+
+		

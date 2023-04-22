@@ -1,0 +1,72 @@
+﻿#pragma strict
+var distanceFromCamera = 20;
+var grappleSpawnPoint : Transform;
+var player : GameObject;
+var range = 100;
+var ropeGrapple : GameObject;
+var capsule : GameObject;
+private var instanceRopeGrapple : GameObject;
+private var capsSpawnPoint : Vector3;
+private var hasShot = false;
+private var instanceCapsL = new List.<GameObject>();
+function Start () {
+
+}
+
+function Awake(){
+
+	if(!player) player = GameObject.FindWithTag("Player");
+	if(!grappleSpawnPoint) grappleSpawnPoint = GameObject.Find("gunNull").transform;
+}
+
+function Update () {
+
+	if(Input.GetButtonDown("Fire1")){
+		var mousePosition = Input.mousePosition;
+		mousePosition.z = distanceFromCamera;
+		var worldMousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
+		var hit : RaycastHit;
+		if(Physics.Raycast(transform.position, worldMousePosition-transform.position, hit, range))
+		{
+			instanceRopeGrapple = Instantiate(ropeGrapple, grappleSpawnPoint.position, Quaternion.identity);
+			var distance = Vector3.Distance(grappleSpawnPoint.position, hit.point);
+			instanceRopeGrapple.transform.position = hit.point;
+			instanceCapsL.Add(instanceRopeGrapple);
+			capsSpawnPoint = instanceRopeGrapple.transform.position;
+			var noOfCapsules = Mathf.Abs(distance);
+			//createCapsules(noOfCapsules);
+			var setRotAmount = Quaternion.LookRotation(grappleSpawnPoint.position - instanceRopeGrapple.transform.position);
+			createCapsules(distance*4.5);
+			
+		}
+	}
+
+}
+
+function createCapsules(capsuleNumber : int){
+	var createdCapsules : int;
+	var setRotAmount = Quaternion.LookRotation(grappleSpawnPoint.position - instanceRopeGrapple.transform.position);
+	while(capsuleNumber > createdCapsules){
+		var instanceCaps = Instantiate(capsule, capsSpawnPoint, setRotAmount);		
+		instanceCaps.transform.position = instanceCaps.transform.position + instanceCaps.transform.TransformDirection(0,0,0.25);
+		instanceCapsL.Add(instanceCaps);
+		capsSpawnPoint = instanceCaps.transform.position;
+		instanceCaps.transform.eulerAngles.x += 90;
+		createdCapsules++;
+		if(createdCapsules==capsuleNumber){
+			setConnectedBodies();
+			}
+		yield;
+	}
+}	
+
+function setConnectedBodies(){
+	var i = instanceCapsL.Count;
+	i -=1;
+	while(i > 0){
+		Debug.Log("done");
+		instanceCapsL[i].GetComponent(CharacterJoint).connectedBody = instanceCapsL[i-1].GetComponent(Rigidbody);
+		i--;
+		yield;
+	}
+}

@@ -1,0 +1,14 @@
+﻿#pragma strict
+
+var lvlNumber = 1;
+function Start () {
+
+}
+
+function Update () {
+
+}
+
+function OnClick(){
+	Application.LoadLevel(lvlNumber);
+}

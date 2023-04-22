@@ -1,0 +1,21 @@
+﻿var bullet : GameObject;
+var bulletSpawnPoint : Transform;
+var rof = 0.5;
+var magazine =10;
+var magazineRefilTime = 2;
+
+
+function FireMagazine() : IEnumerator{
+	var shotsFired = 0;
+	while(shotsFired< magazine){
+		FireBullet();
+		yield WaitForSeconds(rof);
+		shotsFired++;
+	}
+	yield WaitForSeconds(magazineRefilTime);
+	FireMagazine();
+}
+
+function FireBullet(){
+	var instanceBullet = Instantiate(bullet, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
+}

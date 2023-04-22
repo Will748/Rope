@@ -1,0 +1,57 @@
+#pragma strict
+var Fruit : GameObject;
+var throwFruitForceH1 = 400.0;
+var throwFruitForceV1 = 200.0;
+var throwFruitForceH2 = 400.0;
+var throwFruitForceV2 = 200.0;
+var throwFruitForceH3 = 400.0;
+var throwFruitForceV3 = 200.0;
+var throwFruitBehindForceH = 20;
+var throwFruitBehindForceV = 200.0;
+var distance1 = 1.0;
+var distance2 = 3.0;
+var distance3 = 9.0;
+var distanceFromCamera = 20;
+var fruitSpawnPoint : Transform;
+
+function Awake(){
+	
+	fruitSpawnPoint = GameObject.Find("FruitSpawnPoint").transform;
+	if(!Fruit)Fruit = GameObject.FindWithTag("Fruit");
+}
+
+function Update () {
+	
+	if(Input.GetButtonDown("Fire2") && Drum.rotated == false){
+		var newFruit = Instantiate(Fruit, fruitSpawnPoint.position, Quaternion.identity);
+		var mousePosition = Input.mousePosition;
+		mousePosition.z = distanceFromCamera;
+		var worldMousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
+		var shootDirection = worldMousePosition - transform.position;
+		shootDirection = shootDirection.normalized;
+		var distance = Vector3.Distance(worldMousePosition, fruitSpawnPoint.position);
+		var dot = Vector3.Dot(transform.right, transform.InverseTransformPoint(worldMousePosition).normalized);
+		var lworldMousePosition = transform.InverseTransformPoint(worldMousePosition);
+		if(distance > distance1 && distance < distance2 && lworldMousePosition.x > 0)
+		{
+			newFruit.GetComponent.<Rigidbody>().AddForce(shootDirection * throwFruitForceH1);
+			newFruit.GetComponent.<Rigidbody>().AddForce(Vector3.up * throwFruitForceV2 + GetComponent.<Rigidbody>().velocity);
+		}
+		else if(distance > distance2 && distance < distance3 && lworldMousePosition.x > 0)
+		{
+			newFruit.GetComponent.<Rigidbody>().AddForce(shootDirection * throwFruitForceH2);
+			newFruit.GetComponent.<Rigidbody>().AddForce(Vector3.up * throwFruitForceV2 + GetComponent.<Rigidbody>().velocity);
+		}
+		else if(distance > distance3 && lworldMousePosition.x > 0)
+		{
+			newFruit.GetComponent.<Rigidbody>().AddForce(shootDirection * throwFruitForceH3);
+			newFruit.GetComponent.<Rigidbody>().AddForce(Vector3.up * throwFruitForceV3 + GetComponent.<Rigidbody>().velocity);
+		}
+		else if(lworldMousePosition.x < 0)
+		{
+			newFruit.GetComponent.<Rigidbody>().AddForce(shootDirection * throwFruitBehindForceH);
+			newFruit.GetComponent.<Rigidbody>().AddForce(Vector3.up * throwFruitBehindForceV + GetComponent.<Rigidbody>().velocity);
+		}	
+
+	}
+}

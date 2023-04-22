@@ -1,0 +1,73 @@
+#pragma strict
+var player : Transform;
+var rotateSpeed = 2.0;
+var zRotateSpeed = 1.0;
+static var rotated = false;
+private var rotating = false;
+//private var rotateOut =false;
+//private var rotateIn = false;
+
+function Awake(){
+	
+	if(!player)player = GameObject.FindWithTag("Player").transform;
+}
+	
+function Update () {
+		
+	if(Input.GetKeyDown("f") && !rotated && !rotating)RotateDrum(player.up, 180, rotateSpeed, 1);
+	if(Input.GetKeyDown("g") && rotated && !rotating)RotateZ(-90, 1);
+	//if(Input.GetKeyDown("h") && rotated && !rotating)ShootVibe();
+}
+
+function RotateDrum(/*point : Vector3,*/ axis : Vector3,
+                      rotateAmount : float, rotateTime : float, i : int ) {
+    rotated = true;
+    rotating = true;
+	var step : float = 0.0; //non-smoothed
+    var rate : float = 1.0/rotateTime; //amount to increase non-smooth step by
+    var smoothStep : float = 0.0; //smooth step this time
+    var lastStep : float = 0.0; //smooth step last time
+    while(step < 1.0) { // until we're done
+        step += Time.deltaTime * rate; //increase the step
+        smoothStep = Mathf.SmoothStep(0.0, 1.0, step); //get the smooth step
+        transform.RotateAround(player.position, axis, 
+                               rotateAmount * (smoothStep - lastStep));
+        lastStep = smoothStep; //store the smooth step
+        yield;
+    }
+    //finish any left-over
+    //if(step > 1.0) transform.RotateAround(point, axis, rotateAmount * (1.0 - lastStep)); 
+    if(i == 1)StartCoroutine(RotateZ(90, 0)); 
+    else{
+    	rotating = false;
+    	rotated = false;
+	}
+}
+
+function RotateZ(rotate : int, i : int) : IEnumerator {
+	if(i == 1)rotating = true;
+    var oldRotation = transform.rotation; 
+    transform.Rotate(0,0,rotate); 
+    var newRotation = transform.rotation; 
+    for (var t = 0.0; t < 1.0; t += Time.deltaTime * zRotateSpeed) 
+    { 
+    	Debug.Log(t);
+		transform.rotation = Quaternion.Slerp(oldRotation, newRotation, t); 
+        yield; 
+	}
+	if(i == 1)
+	{
+		transform.eulerAngles.z = 90;	
+		RotateDrum(player.up, 180, rotateSpeed, 0);
+	}
+    else{
+    	transform.eulerAngles.z = 180 ;	
+    	rotated = true;
+    	rotating = false;
+	}
+    //finish any left-over
+    //if(t < 1.0) transform.RotateZ(point, axis, rotateAmount * (1.0 - lastStep));	
+}
+
+//function ShootVibe(){
+	

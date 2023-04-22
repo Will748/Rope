@@ -1,0 +1,18 @@
+﻿#pragma strict
+var health = 5;
+
+
+function OnCollisionEnter(other : Collision){
+	if(other.transform.gameObject.tag == "GunBullet"){
+		health -=1;
+		if(health == 0){
+			Destroy(gameObject);
+			var Enemys : GameObject[] = GameObject.FindGameObjectsWithTag("Enemy2");
+			for(var enemy : GameObject in Enemys){
+				Debug.Log("t");
+				//enemy.SendMessage("NearestTarget");
+				enemy.SendMessage("LookAtNearestTarget");
+			}
+		}
+	}
+}

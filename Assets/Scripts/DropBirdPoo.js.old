@@ -1,0 +1,23 @@
+﻿#pragma strict
+var randomMin = 1.0;
+var randomMax = 5.0;
+var birdPoo : GameObject;
+var birdPooSpawnPoint : Transform;
+
+function Start () {
+	StartCoroutine(DropPoo());
+
+}
+
+function Update () {
+
+
+}
+
+function DropPoo() : IEnumerator{
+	Debug.Log("running");
+	var randomNumber = Random.Range(randomMin, randomMax);
+	yield WaitForSeconds(randomNumber);
+	Instantiate(birdPoo, birdPooSpawnPoint.position, Quaternion.identity);
+	DropPoo();
+}

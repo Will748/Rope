@@ -1,0 +1,24 @@
+﻿#pragma strict
+var speed = 10.0;
+var damage = 10.0;
+
+function Start () {
+	 
+	 Destroy(gameObject, 5);
+
+}
+
+function Update () {
+	
+	transform.Translate(0,0,speed);
+	
+}
+
+function OnTriggerEnter(collider :  Collider){
+
+	if(collider.gameObject.tag == "Player"){
+		collider.gameObject.GetComponent(Health).ApplyDamage(damage);
+		
+	}
+
+}

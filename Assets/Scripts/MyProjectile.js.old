@@ -1,0 +1,25 @@
+﻿#pragma strict
+
+var range = 8;
+var speed = 200;
+
+function Start(){
+	
+	Destroy(gameObject, 3);
+}
+
+function Update () {
+
+	transform.Translate(0,speed * Time.deltaTime,0);
+	var distanceTravelled = Vector3.Distance(transform.position, GameObject.FindWithTag("projectileSpawnPoint").transform.position);
+	if(distanceTravelled > range){
+		Destroy(gameObject);
+	}
+
+}
+
+function OnCollisionEnter(collision : Collision){
+	if(collision.gameObject.transform.tag != "Turret"){
+		Destroy(gameObject);
+	}
+}

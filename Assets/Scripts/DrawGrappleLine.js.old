@@ -1,0 +1,68 @@
+#pragma strict
+import System.Collections.Generic;
+
+// Line start width
+static  var startWidth = 0.05;
+// Line end width
+static var endWidth = 0.05;
+static var i = 2;
+static var n = 0;
+//or you could use...
+//var aMaterial : Material;
+
+// get line going...
+static var line : LineRenderer;
+
+function Awake()
+{
+   	line = this.gameObject.AddComponent(LineRenderer);
+   	line.SetWidth(startWidth, endWidth);
+   	line.SetVertexCount(2);
+   	line.material.color = Color.red;
+//we need to see the line... 
+   	line.GetComponent.<Renderer>().enabled = true;
+
+   //var meshCollider : MeshCollider = gameObject.AddComponent(MeshCollider);
+   //meshCollider.sharedMesh;
+}
+
+/*static function createLine(startingPoint : Vector3, endingPoint : Vector3){
+	//var line = this.gameObject.AddComponent(LineRenderer);
+   	line.SetWidth(startWidth, endWidth);
+   	line.SetVertexCount(2);
+  	line.material.color = Color.red;
+   	line.renderer.enabled = true;
+}*/
+
+function Update ()
+{
+
+//get the shooter object...
+//set starting point of line to this object, in this case the grappling hook prefab
+   	line.SetPosition(1, this.gameObject.transform.position);
+//set the ending point of the line to the shooter object
+   	line.SetPosition(0, GameObject.Find("gunNull").transform.position);
+}
+
+static function getLinePositions(){
+	i = 2;
+	//line.renderer.enabled =false;
+	line.SetVertexCount(i);
+	for(var s = ShootGrapple2.grapplePositions.Count; s > 0; s--){
+		line.SetVertexCount(i+1);
+		line.SetPosition(i, ShootGrapple2.grapplePositions[s-1]);
+		i++;
+	}
+	line.GetComponent.<Renderer>().enabled = true;
+}
+
+/*static function addLinePosition(){
+	i++
+	line.SetVertexCount(i);
+	line.SetPosition(i, 
+	/*line.SetVertexCount(i+1);
+	Debug.Log(ShootGrapple.grapplePositions[n]);
+	line.SetPosition(i,ShootGrapple.grapplePositions[n]);
+	i++;
+	n++;
+}*/

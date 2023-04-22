@@ -1,0 +1,10 @@
+﻿#pragma strict
+
+
+function Update () {
+
+	if(Input.GetKey("r")){
+		Application.LoadLevel(0);
+	}
+
+}
